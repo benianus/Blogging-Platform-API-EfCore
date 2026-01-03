@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace BloggingPlatformAPI.Controllers
 {
-    [Route("api/BloggingPlatform")]
+    [Route("api/posts")]
     [ApiController]
     public class BloggingPlatformApi : ControllerBase
     {
@@ -16,7 +16,7 @@ namespace BloggingPlatformAPI.Controllers
             _db = db;
         }
 
-        [HttpGet("allPosts", Name = "GetAllPosts")]
+        [HttpGet(Name = "GetAllPosts")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<List<BlogPost>>> GetAllPosts()
@@ -30,7 +30,7 @@ namespace BloggingPlatformAPI.Controllers
 
             return NotFound("Posts Not Found");
         }
-        [HttpGet("post/{id}", Name = "GetPostById")]
+        [HttpGet("{id}", Name = "GetPostById")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -47,7 +47,7 @@ namespace BloggingPlatformAPI.Controllers
 
             return NotFound("Posts Not Found");
         }
-        [HttpGet("filterBy/{term}", Name = "FilterPostByTerm")]
+        [HttpGet("filter-by/{term}", Name = "FilterPostByTerm")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<List<BlogPost>>> FilterPostsByTerm(string term)
@@ -73,7 +73,7 @@ namespace BloggingPlatformAPI.Controllers
 
             return NotFound("Posts not found");
         }
-        [HttpPost("addPost", Name = "CreatePost")]
+        [HttpPost(Name = "CreatePost")]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<BlogPost>> CreatePost(BlogPost post)
@@ -89,12 +89,12 @@ namespace BloggingPlatformAPI.Controllers
             return CreatedAtRoute("GetPostById", new { Id = post.Id }, post);
         }
 
-        [HttpPut("editPost/{id}", Name = "EditPost")]
+        [HttpPut("{id}", Name = "EditPost")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<BlogPost>> UpdatePost(int id, BlogPost blogPost)
+        public async Task<ActionResult<BlogPost>> UpdatePost(int id,[FromBody] BlogPost blogPost)
         {
             var findedPosts = await _db.BlogPost.ToListAsync();
 
@@ -121,7 +121,7 @@ namespace BloggingPlatformAPI.Controllers
 
             return BadRequest("Bad request");
         }
-        [HttpDelete("delete/{id}", Name = "DeletePost")]
+        [HttpDelete("{id}", Name = "DeletePost")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<string>> DeletePost(int id)
